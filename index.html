@@ -16,10 +16,10 @@
 <meta name="contributor" content="jim@corruptmemory.com" />
 <meta name="publisher" content="jim@corruptmemory.com" />
 <meta name="description"
-  content="Although the technical term for Monad comes from Category Theory, it turns out that monads are pervasive in programming.  Most of the time people don't know they are using a monad, but getting a better understanding of what monads are will help you better understand how to exploit their mathematical properties.  Several common monads will be presented with examples in Haskell, Scala, and Scheme."
+  content="Although the technical term for Monad comes from Category Theory, it turns out that monads are pervasive in programming. Most of the time people don't know they are using a monad, but getting a better understanding of what monads are will help you better understand how to exploit their mathematical properties. Examples of monads will be presented in Haskell. The talk does not assume any prior experience with Haskell and will describe the features of Haskell needed to understand the examples."
 />
 <meta name="keywords"
-  content="Monad, Functional Programming, Haskell, Scala, Scheme"
+  content="Monad, Functional Programming, Haskell"
 />
 <meta name="robots" content="index, follow" />
 <meta name="revisit-after" content="7 days" />
@@ -278,44 +278,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
     </li>
 
     <li class="slide">
-      <h1>Monads in Scala</h1>
-      Turns out that the <i>explicit</i> construction and use of monadic forms are supported in <a href="http://www.scala-lang.org/">Scala</a> as well.  This support comes from the functions <code>flatMap</code> and <code>map</code>.
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">abstract class</span> M<span class="hl opt">[</span>A<span class="hl opt">] {</span>
-<span class="hl lin"> 2 </span>  <span class="hl kwa">def</span> flatMap<span class="hl opt">[</span>B<span class="hl opt">](</span>f<span class="hl opt">:</span>A <span class="hl opt">=&gt;</span> M<span class="hl opt">[</span>B<span class="hl opt">]):</span>M<span class="hl opt">[</span>B<span class="hl opt">]</span>
-<span class="hl lin"> 3 </span>  <span class="hl kwa">def</span> map<span class="hl opt">[</span>B<span class="hl opt">](</span>f<span class="hl opt">:</span>A <span class="hl opt">=&gt;</span> B<span class="hl opt">):</span>M<span class="hl opt">[</span>B<span class="hl opt">]</span>
-<span class="hl lin"> 4 </span><span class="hl opt">}</span>
-</pre>
-      <ul class="incremental">
-        <li>If you unroll the OO notation of Scala then you get:
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">def</span> flatMap<span class="hl opt">[</span>B<span class="hl opt">]:</span>M<span class="hl opt">[</span>A<span class="hl opt">] =&gt; (</span>A <span class="hl opt">=&gt;</span> M<span class="hl opt">[</span>B<span class="hl opt">]) =&gt;</span> M<span class="hl opt">[</span>B<span class="hl opt">]</span>
-</pre></li>
-        <li>What about <code>return</code>?</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Scala <code>for</code> comprehensions</h1>
-      Scala <code>for</code> comprehensions of the form:
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  x <span class="hl opt">&lt;-</span> foo
-<span class="hl lin"> 3 </span>  y <span class="hl opt">&lt;-</span> bar
-<span class="hl lin"> 4 </span><span class="hl opt">}</span> <span class="hl kwa">yield</span> <span class="hl kwd">f</span><span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span>
-</pre>
-      Expand into:
-<pre class="hl"><span class="hl lin"> 1 </span>foo<span class="hl opt">.</span>flatMap <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  x <span class="hl opt">=&gt;</span> bar<span class="hl opt">.</span>map <span class="hl opt">{</span>
-<span class="hl lin"> 3 </span>    y <span class="hl opt">=&gt;</span> <span class="hl kwd">f</span><span class="hl opt">(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span>
-<span class="hl lin"> 4 </span>  <span class="hl opt">}</span>
-<span class="hl lin"> 5 </span><span class="hl opt">}</span>
-</pre>
-      So <code>return</code> is <code>yield</code> in Scala <code>for</code> comprehensions
-      <ul class="incremental" style="font-size:80%;">
-        <li>The implementation is through <code>map</code></li>
-        <li>No need to implement special interfaces or inherit from special classes to get this magic.  Simply add a <code>flatMap</code> and <code>map</code> to your classes (directly or indirectly through <i>implicits</i>) and you can use instances in <code>for</code> comprehensions.</li>
-      </ul>
-    </li>
-
-    <li class="slide">
       <h1>IO Monad</h1>
       <div style="text-align:center;"><img style="vertical-align:middle;padding-right:0.5em;height:200px;" src="pix/morpheus.jpg"/>Connects a program to the "real world"</div>
       <ul class="incremental">
@@ -342,32 +304,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
     </li>
 
     <li class="slide">
-      <h1>IO Monad</h1>
-      <div style="text-align:center;"><img style="vertical-align:middle;padding-right:0.5em;height:200px;" src="pix/morpheus.jpg"/>Connects a program to the "real world"</div>
-      <ul style="font-size:80%">
-        <li>Quick aside: The <a href="http://community.schemewiki.org/?Stalin">Stalin Scheme Compiler</a>:<br/><br/>
-          <i>In detail, Stalin is a whole-program compiler that uses advanced flow analysis & closure conversion techniques. It compiles Scheme to highly optimized C. Stalin has a few very significant limitations, however:<ul>
-            <li>it takes a long time to compile anything including the compiler</li>
-            <li>it is not designed for interactive use or debugging</li>
-            <li>it does not support R4RS/R5RS high-level macros</li>
-            <li>it does not support the full numeric tower</li>
-          </ul>
-        </li></i>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>IO Monad</h1>
-      <div style="text-align:center;"><img style="vertical-align:middle;padding-right:0.5em;height:200px;" src="pix/morpheus.jpg"/>Connects a program to the "real world"</div>
-      <ul>
-        <li>Quick aside: The <a href="http://community.schemewiki.org/?Stalin">Stalin Scheme Compiler</a><ul>
-            <li>Most of what Stalin accomplishes can be accomplished by <i>effect tracking</i> and <i>static typing</i></li>
-          </ul></li>
-      </ul>
-    </li>
-
-
-    <li class="slide">
       <h1>Maybe Monad</h1> 
       Used to indicate that a computation produced a value.
       <ul>
@@ -390,16 +326,10 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <span class="hl lin"> 5 </span>    Nothing  <span class="hl opt">&gt;&gt;=</span> _      <span class="hl opt">=</span> Nothing
 <span class="hl lin"> 6 </span>    <span class="hl kwc">return</span>              <span class="hl opt">=</span> Just
 </pre>
-      <ul class="incremental">
-        <li>In Scala <code>Maybe</code> is called <code>Option</code></li>
-        <li><code>Just x</code> =&gt; <code>Some(x)</code></li>
-        <li><code>Nothing</code> =&gt; <code>None</code></li>
-      </ul>
     </li>
 
     <li class="slide">
       <h1>Maybe Monad Example</h1>
-      <ul><li>Haskell</li></ul>
 <pre class="hl"><span class="hl lin"> 1 </span>sampleRequest <span class="hl opt">= [(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl num">1</span><span class="hl opt">),</span> 
 <span class="hl lin"> 2 </span>                 <span class="hl opt">(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">),</span> 
 <span class="hl lin"> 3 </span>                 <span class="hl opt">(</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">,</span><span class="hl num">3</span><span class="hl opt">),</span> 
@@ -422,30 +352,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
       </ul>
     </li>
 
-
-    <li class="slide">
-      <h1>Maybe Monad Example</h1>
-      <ul><li>Scala</li></ul>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">object</span> Monadic <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  <span class="hl kwa">val</span> sampleRequest <span class="hl opt">=</span> <span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">-&gt;</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">-&gt;</span><span class="hl num">2</span><span class="hl opt">,</span> 
-<span class="hl lin"> 3 </span>                          <span class="hl str">&quot;c&quot;</span><span class="hl opt">-&gt;</span><span class="hl num">3</span><span class="hl opt">,</span><span class="hl str">&quot;d&quot;</span><span class="hl opt">-&gt;</span><span class="hl num">4</span><span class="hl opt">)</span>
-<span class="hl lin"> 4 </span>  <span class="hl kwa">def</span> <span class="hl kwd">sum2</span><span class="hl opt">(</span>s1<span class="hl opt">:</span>String<span class="hl opt">,</span>s2<span class="hl opt">:</span>String<span class="hl opt">,</span>dict<span class="hl opt">:</span>Map<span class="hl opt">[</span>String<span class="hl opt">,</span>Int<span class="hl opt">]) =</span> 
-<span class="hl lin"> 5 </span>    <span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin"> 6 </span>      r1 <span class="hl opt">&lt;-</span> dict<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>s1<span class="hl opt">)</span>
-<span class="hl lin"> 7 </span>      r2 <span class="hl opt">&lt;-</span> dict<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>s2<span class="hl opt">)</span>
-<span class="hl lin"> 8 </span>    <span class="hl opt">}</span> <span class="hl kwa">yield</span> r1<span class="hl opt">+</span>r2
-<span class="hl lin"> 9 </span><span class="hl opt">}</span>
-</pre>
-      <ul class="incremental">
-        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">import</span> Monadic<span class="hl opt">.</span>_
-<span class="hl lin"> 2 </span><span class="hl kwd">sum2</span><span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span>sampleRequest<span class="hl opt">)</span>
-</pre></li>
-        <li><code>Some(3)</code></li>
-        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">sum2</span><span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;z&quot;</span><span class="hl opt">,</span>sampleRequest<span class="hl opt">)</span></pre></li>
-        <li><code>None</code></li>
-      </ul>
-    </li>
-
     <li class="slide">
       <h1>List Monad</h1> 
       Used to indicate that a computation involved choice.
@@ -453,14 +359,10 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <span class="hl lin"> 2 </span>  <span class="hl kwc">return</span> a <span class="hl opt">= [</span>a<span class="hl opt">]</span>
 <span class="hl lin"> 3 </span>  xs <span class="hl opt">&gt;&gt;=</span> f <span class="hl opt">=</span> <span class="hl kwc">concat</span> <span class="hl opt">(</span><span class="hl kwc">map</span> f xs<span class="hl opt">)</span>
 </pre>
-      <ul class="incremental">
-        <li>In Scala the List monad is baked right into the class. (I.E: List implements <code>flatMap</code> and <code>map</code>)</li>
-      </ul>
     </li>
 
     <li class="slide">
       <h1>List Monad Example</h1>
-      <ul><li>Haskell</li></ul>
 <pre class="hl"><span class="hl lin"> 1 </span>pairs <span class="hl opt">:: [</span>a<span class="hl opt">] -&gt; [</span>b<span class="hl opt">] -&gt; [(</span>a<span class="hl opt">,</span>b<span class="hl opt">)]</span>
 <span class="hl lin"> 2 </span>pairs xs ys <span class="hl opt">=</span> <span class="hl kwd">do</span>
 <span class="hl lin"> 3 </span>      x <span class="hl opt">&lt;-</span> xs
@@ -481,24 +383,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <pre class="hl"><span class="hl lin"> 1 </span>pairs2 <span class="hl opt">:: [</span>a<span class="hl opt">] -&gt; [</span>b<span class="hl opt">] -&gt; [(</span>a<span class="hl opt">,</span>b<span class="hl opt">)]</span>
 <span class="hl lin"> 2 </span>pairs2 xs ys <span class="hl opt">= [(</span>x<span class="hl opt">,</span>y<span class="hl opt">)</span> | x <span class="hl opt">&lt;-</span> xs<span class="hl opt">,</span> y <span class="hl opt">&lt;-</span> ys<span class="hl opt">]</span>
 </pre>
-    </li>
-
-    <li class="slide">
-      <h1>List Monad Example</h1>
-      <ul><li>Scala</li></ul>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">object</span> Pairs <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  <span class="hl kwa">def</span> apply<span class="hl opt">[</span>A<span class="hl opt">,</span>B<span class="hl opt">](</span><span class="hl kwa">as</span><span class="hl opt">:</span>List<span class="hl opt">[</span>A<span class="hl opt">],</span>bs<span class="hl opt">:</span>List<span class="hl opt">[</span>B<span class="hl opt">]) =</span> <span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin"> 3 </span>    a <span class="hl opt">&lt;-</span> <span class="hl kwa">as</span>
-<span class="hl lin"> 4 </span>    b <span class="hl opt">&lt;-</span> bs
-<span class="hl lin"> 5 </span>  <span class="hl opt">}</span> <span class="hl kwa">yield</span> <span class="hl opt">(</span>a<span class="hl opt">,</span>b<span class="hl opt">)</span>
-<span class="hl lin"> 6 </span><span class="hl opt">}</span>
-</pre>
-      <ul class="incremental">
-        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">Pairs</span><span class="hl opt">(</span><span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl num">3</span><span class="hl opt">),</span><span class="hl kwd">List</span><span class="hl opt">(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">))</span>
-</pre></li>
-        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">List</span><span class="hl opt">((</span><span class="hl num">1</span><span class="hl opt">,</span>a<span class="hl opt">), (</span><span class="hl num">1</span><span class="hl opt">,</span>b<span class="hl opt">), (</span><span class="hl num">1</span><span class="hl opt">,</span>c<span class="hl opt">), (</span><span class="hl num">2</span><span class="hl opt">,</span>a<span class="hl opt">), (</span><span class="hl num">2</span><span class="hl opt">,</span>b<span class="hl opt">), (</span><span class="hl num">2</span><span class="hl opt">,</span>c<span class="hl opt">), (</span><span class="hl num">3</span><span class="hl opt">,</span>a<span class="hl opt">), (</span><span class="hl num">3</span><span class="hl opt">,</span>b<span class="hl opt">), (</span><span class="hl num">3</span><span class="hl opt">,</span>c<span class="hl opt">))</span>
-</pre></li>
-      </ul>
     </li>
 
     <li class="slide">
@@ -635,214 +519,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 </pre></li>
     </ul>
     </li>
-
-    <li class="slide">
-      <h1>OK, moment of truth</h1>
-      Can we do this in Scala?
-      <ul class="incremental">
-        <li>Yes, but we have some more work to do because Scala doesn't ship with all the same monadic building tools as Haskell</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Response.scala</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">package</span> com<span class="hl opt">.</span>corruptmemory<span class="hl opt">.</span>monadic_web
-<span class="hl lin"> 2 </span>
-<span class="hl lin"> 3 </span><span class="hl kwa">sealed trait</span> Response
-<span class="hl lin"> 4 </span><span class="hl kwa">case class</span> <span class="hl kwd">Value</span><span class="hl opt">(</span>value<span class="hl opt">:</span>String<span class="hl opt">)</span> <span class="hl kwa">extends</span> Response
-<span class="hl lin"> 5 </span><span class="hl kwa">case class</span> <span class="hl kwd">Stream</span><span class="hl opt">(</span>stream<span class="hl opt">:</span>StringBuilder <span class="hl opt">=&gt;</span> Unit<span class="hl opt">)</span> <span class="hl kwa">extends</span> Response
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>RequestMonad.scala</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">package</span> com<span class="hl opt">.</span>corruptmemory<span class="hl opt">.</span>monadic_web
-<span class="hl lin"> 2 </span>
-<span class="hl lin"> 3 </span><span class="hl kwa">abstract class</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin"> 4 </span>  self <span class="hl opt">=&gt;</span>
-<span class="hl lin"> 5 </span>  <span class="hl kwa">import</span> MaybeError<span class="hl opt">.</span>MaybeError
-<span class="hl lin"> 6 </span>  <span class="hl kwa">import</span> RequestMonad<span class="hl opt">.</span>_
-<span class="hl lin"> 7 </span>  <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError
-<span class="hl lin"> 8 </span>  <span class="hl kwa">def</span> <span class="hl kwd">map</span><span class="hl opt">(</span>f<span class="hl opt">:</span>MaybeError <span class="hl opt">=&gt;</span> MaybeError<span class="hl opt">):</span>RequestMonad <span class="hl opt">=</span> <span class="hl kwa">new</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin"> 9 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError <span class="hl opt">=</span> 
-<span class="hl lin">10 </span>      self<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">).</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">11 </span>                               fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> <span class="hl kwd">f</span><span class="hl opt">(</span><span class="hl kwd">Right</span><span class="hl opt">(</span>r<span class="hl opt">)))</span>
-<span class="hl lin">12 </span>  <span class="hl opt">}</span>
-<span class="hl lin">13 </span>  <span class="hl kwa">def</span> <span class="hl kwd">flatMap</span><span class="hl opt">(</span>f<span class="hl opt">:</span>MaybeError <span class="hl opt">=&gt;</span> RequestMonad<span class="hl opt">):</span>RequestMonad <span class="hl opt">=</span> <span class="hl kwa">new</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin">14 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError <span class="hl opt">=</span> 
-<span class="hl lin">15 </span>      self<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">).</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">16 </span>                               fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> <span class="hl kwd">f</span><span class="hl opt">(</span><span class="hl kwd">Right</span><span class="hl opt">(</span>r<span class="hl opt">)).</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">))</span>
-<span class="hl lin">17 </span>  <span class="hl opt">}</span>
-<span class="hl lin">18 </span><span class="hl opt">}</span>
-</pre>
-    <ul class="incremental">
-      <li>This line gives us a <i>Reader monad</i>:<br/>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError
-</pre></li>
-    </ul>
-    </li>
-
-    <li class="slide">
-      <h1>RequestMonad.scala (continued)</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">object</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  <span class="hl kwa">import</span> MaybeError<span class="hl opt">.</span>MaybeError
-<span class="hl lin"> 3 </span>  <span class="hl kwa">type</span> Request <span class="hl opt">=</span> Map<span class="hl opt">[</span>String<span class="hl opt">,</span>String<span class="hl opt">]</span>
-<span class="hl lin"> 4 </span>  <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>handler<span class="hl opt">:</span>Request<span class="hl opt">=&gt;</span>MaybeError<span class="hl opt">):</span>RequestMonad <span class="hl opt">=</span> <span class="hl kwa">new</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin"> 5 </span>    <span class="hl kwa">import</span> MaybeError<span class="hl opt">.</span>MaybeError
-<span class="hl lin"> 6 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError <span class="hl opt">=</span> <span class="hl kwd">handler</span><span class="hl opt">(</span>request<span class="hl opt">)</span>
-<span class="hl lin"> 7 </span>  <span class="hl opt">}</span>
-<span class="hl lin"> 8 </span>  <span class="hl kwa">def</span> <span class="hl kwd">wrapResponse</span><span class="hl opt">(</span>response<span class="hl opt">:</span>MaybeError<span class="hl opt">,</span>wrapper<span class="hl opt">:</span>Request<span class="hl opt">=&gt;</span>Response<span class="hl opt">=&gt;</span>MaybeError<span class="hl opt">):</span>RequestMonad <span class="hl opt">=</span> <span class="hl kwa">new</span> RequestMonad <span class="hl opt">{</span>
-<span class="hl lin"> 9 </span>    <span class="hl kwa">import</span> MaybeError<span class="hl opt">.</span>MaybeError
-<span class="hl lin">10 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>MaybeError <span class="hl opt">=</span> 
-<span class="hl lin">11 </span>      response<span class="hl opt">.</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">12 </span>                    fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> <span class="hl kwd">wrapper</span><span class="hl opt">(</span>request<span class="hl opt">)(</span>r<span class="hl opt">))</span>
-<span class="hl lin">13 </span>  <span class="hl opt">}</span>
-<span class="hl lin">14 </span><span class="hl opt">}</span>
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>RequestMonad.scala (continued)</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">abstract class</span> RequestReader<span class="hl opt">[</span>A<span class="hl opt">] {</span>
-<span class="hl lin"> 2 </span>  self <span class="hl opt">=&gt;</span>
-<span class="hl lin"> 3 </span>  <span class="hl kwa">import</span> RequestMonad<span class="hl opt">.</span>_
-<span class="hl lin"> 4 </span>  <span class="hl kwa">import</span> RequestHelpers<span class="hl opt">.</span>_
-<span class="hl lin"> 5 </span>  <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>Result<span class="hl opt">[</span>A<span class="hl opt">]</span>
-<span class="hl lin"> 6 </span>  
-<span class="hl lin"> 7 </span>  <span class="hl kwa">def</span> map<span class="hl opt">[</span>B<span class="hl opt">](</span>f<span class="hl opt">:</span>A <span class="hl opt">=&gt;</span> B<span class="hl opt">):</span>RequestReader<span class="hl opt">[</span>B<span class="hl opt">] =</span> <span class="hl kwa">new</span> RequestReader<span class="hl opt">[</span>B<span class="hl opt">] {</span>
-<span class="hl lin"> 8 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>Result<span class="hl opt">[</span>B<span class="hl opt">] =</span> 
-<span class="hl lin"> 9 </span>      self<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">).</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">10 </span>                               fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> <span class="hl kwd">Right</span><span class="hl opt">(</span><span class="hl kwd">f</span><span class="hl opt">(</span>r<span class="hl opt">)))</span>
-<span class="hl lin">11 </span>  <span class="hl opt">}</span>
-<span class="hl lin">12 </span>  
-<span class="hl lin">13 </span>  <span class="hl kwa">def</span> flatMap<span class="hl opt">[</span>B<span class="hl opt">](</span>f<span class="hl opt">:</span>A <span class="hl opt">=&gt;</span> RequestReader<span class="hl opt">[</span>B<span class="hl opt">]):</span>RequestReader<span class="hl opt">[</span>B<span class="hl opt">] =</span> <span class="hl kwa">new</span> RequestReader<span class="hl opt">[</span>B<span class="hl opt">] {</span>
-<span class="hl lin">14 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>Result<span class="hl opt">[</span>B<span class="hl opt">] =</span> 
-<span class="hl lin">15 </span>      self<span class="hl opt">.</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">).</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">16 </span>                               fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> <span class="hl kwd">f</span><span class="hl opt">(</span>r<span class="hl opt">).</span><span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">))</span>
-<span class="hl lin">17 </span>  <span class="hl opt">}</span>
-<span class="hl lin">18 </span><span class="hl opt">}</span>
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>RequestMonad.scala (continued)</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">object</span> RequestHelpers <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  <span class="hl kwa">import</span> RequestMonad<span class="hl opt">.</span>_
-<span class="hl lin"> 3 </span>  <span class="hl kwa">type</span> Result<span class="hl opt">[</span>X<span class="hl opt">] =</span> Either<span class="hl opt">[</span>String<span class="hl opt">,</span>X<span class="hl opt">]</span>
-<span class="hl lin"> 4 </span>  <span class="hl kwa">def</span> <span class="hl kwd">read</span><span class="hl opt">(</span>key<span class="hl opt">:</span>String<span class="hl opt">):</span>RequestReader<span class="hl opt">[</span>String<span class="hl opt">] =</span> <span class="hl kwa">new</span> RequestReader<span class="hl opt">[</span>String<span class="hl opt">] {</span>
-<span class="hl lin"> 5 </span>    <span class="hl kwa">def</span> <span class="hl kwd">apply</span><span class="hl opt">(</span>request<span class="hl opt">:</span>Request<span class="hl opt">):</span>Result<span class="hl opt">[</span>String<span class="hl opt">] =</span> request<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span>key<span class="hl opt">)</span> match <span class="hl opt">{</span>
-<span class="hl lin"> 6 </span>      <span class="hl kwa">case</span> <span class="hl kwd">Some</span><span class="hl opt">(</span>x<span class="hl opt">) =&gt;</span> <span class="hl kwd">Right</span><span class="hl opt">(</span>x<span class="hl opt">)</span>
-<span class="hl lin"> 7 </span>      <span class="hl kwa">case</span> None <span class="hl opt">=&gt;</span> <span class="hl kwd">Left</span><span class="hl opt">(</span><span class="hl str">&quot;Could not get value for:%s&quot;</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>key<span class="hl opt">))</span>
-<span class="hl lin"> 8 </span>    <span class="hl opt">}</span>
-<span class="hl lin"> 9 </span>  <span class="hl opt">}</span>
-<span class="hl lin">10 </span><span class="hl opt">}</span>
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>MaybeError.scala</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwa">package</span> com<span class="hl opt">.</span>corruptmemory<span class="hl opt">.</span>monadic_web
-<span class="hl lin"> 2 </span>
-<span class="hl lin"> 3 </span><span class="hl kwa">object</span> MaybeError <span class="hl opt">{</span>
-<span class="hl lin"> 4 </span>  <span class="hl kwa">type</span> MaybeError <span class="hl opt">=</span> Either<span class="hl opt">[</span>String<span class="hl opt">,</span>Response<span class="hl opt">]</span>  
-<span class="hl lin"> 5 </span>  <span class="hl kwa">class</span> <span class="hl kwd">MaybeErrorW</span><span class="hl opt">(</span>r<span class="hl opt">:</span>MaybeError<span class="hl opt">) {</span>
-<span class="hl lin"> 6 </span>    <span class="hl kwa">def</span> fold2<span class="hl opt">[</span>Z<span class="hl opt">](</span>failure<span class="hl opt">:</span>String <span class="hl opt">=&gt;</span> Z<span class="hl opt">,</span>
-<span class="hl lin"> 7 </span>        value<span class="hl opt">:</span>String <span class="hl opt">=&gt;</span> Z<span class="hl opt">,</span>
-<span class="hl lin"> 8 </span>        stream<span class="hl opt">:(</span>StringBuilder <span class="hl opt">=&gt;</span> Unit<span class="hl opt">) =&gt;</span> Z<span class="hl opt">):</span>Z <span class="hl opt">= {</span>
-<span class="hl lin"> 9 </span>      r<span class="hl opt">.</span><span class="hl kwd">fold</span><span class="hl opt">(</span>fa <span class="hl opt">=</span> l <span class="hl opt">=&gt;</span> <span class="hl kwd">failure</span><span class="hl opt">(</span>l<span class="hl opt">),</span>
-<span class="hl lin">10 </span>             fb <span class="hl opt">=</span> r <span class="hl opt">=&gt;</span> r match <span class="hl opt">{</span>
-<span class="hl lin">11 </span>               <span class="hl kwa">case</span> <span class="hl kwd">Value</span><span class="hl opt">(</span>s<span class="hl opt">) =&gt;</span> <span class="hl kwd">value</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
-<span class="hl lin">12 </span>               <span class="hl kwa">case</span> <span class="hl kwd">Stream</span><span class="hl opt">(</span>s<span class="hl opt">) =&gt;</span> <span class="hl kwd">stream</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
-<span class="hl lin">13 </span>              <span class="hl opt">})</span>
-<span class="hl lin">14 </span>    <span class="hl opt">}</span>
-<span class="hl lin">15 </span>  <span class="hl opt">}</span>
-<span class="hl lin">16 </span>  
-<span class="hl lin">17 </span>  implicit <span class="hl kwa">def</span> <span class="hl kwd">meW</span><span class="hl opt">(</span>r<span class="hl opt">:</span>MaybeError<span class="hl opt">) =</span> <span class="hl kwa">new</span> <span class="hl kwd">MaybeErrorW</span><span class="hl opt">(</span>r<span class="hl opt">)</span>
-<span class="hl lin">18 </span>  <span class="hl kwa">def</span> <span class="hl kwd">err</span><span class="hl opt">(</span>message<span class="hl opt">:</span>String<span class="hl opt">):</span>Either<span class="hl opt">[</span>String<span class="hl opt">,</span>Response<span class="hl opt">] =</span> <span class="hl kwd">Left</span><span class="hl opt">(</span>message<span class="hl opt">)</span>
-<span class="hl lin">19 </span><span class="hl opt">}</span>
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>Main.scala</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>  <span class="hl kwa">def</span> handler1<span class="hl opt">:</span> RequestReader<span class="hl opt">[</span>MaybeError<span class="hl opt">] = {</span>
-<span class="hl lin"> 2 </span>    <span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin"> 3 </span>      a <span class="hl opt">&lt;-</span> <span class="hl kwd">read</span><span class="hl opt">(</span><span class="hl str">&quot;arg&quot;</span><span class="hl opt">)</span>
-<span class="hl lin"> 4 </span>    <span class="hl opt">}</span> <span class="hl kwa">yield</span> a
-<span class="hl lin"> 5 </span>  <span class="hl opt">}</span>
-<span class="hl lin"> 6 </span>
-<span class="hl lin"> 7 </span>  <span class="hl kwa">def</span> handler2<span class="hl opt">:</span> RequestReader<span class="hl opt">[</span>MaybeError<span class="hl opt">] = {</span>
-<span class="hl lin"> 8 </span>    <span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin"> 9 </span>      a <span class="hl opt">&lt;-</span> <span class="hl kwd">read</span><span class="hl opt">(</span><span class="hl str">&quot;arg&quot;</span><span class="hl opt">)</span>
-<span class="hl lin">10 </span>    <span class="hl opt">}</span> <span class="hl kwa">yield</span> <span class="hl kwd">Stream</span><span class="hl opt">((</span>sb<span class="hl opt">:</span>StringBuilder<span class="hl opt">) =&gt;</span> sb<span class="hl opt">.</span><span class="hl kwd">append</span><span class="hl opt">(</span>a<span class="hl opt">))</span>
-<span class="hl lin">11 </span>  <span class="hl opt">}</span>
-</pre>
-    </li>
-
-    <li class="slide">
-      <h1>Take it for a spin!</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>    <span class="hl kwa">val</span> processor <span class="hl opt">=</span> <span class="hl kwd">RequestMonad</span><span class="hl opt">(</span>handler1<span class="hl opt">)</span>
-<span class="hl lin"> 2 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-<span class="hl lin"> 3 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg1&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-</pre>
-      <ul class="incremental">
-        <li>&gt;&gt;&gt; Browser says: woo hoo!</li>
-        <li>*** ERROR: Could not get value for:arg</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Take it for a spin! (Streaming)</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>    <span class="hl kwa">val</span> processor1 <span class="hl opt">=</span> <span class="hl kwd">RequestMonad</span><span class="hl opt">(</span>handler2<span class="hl opt">)</span>
-<span class="hl lin"> 2 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor1</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-<span class="hl lin"> 3 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor1</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg1&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-</pre>
-      <ul class="incremental">
-        <li>~~~ Streamed result: woo hoo!</li>
-        <li>*** ERROR: Could not get value for:arg</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Let's get a little creative</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>  <span class="hl kwa">def</span> <span class="hl kwd">responseWrapper</span><span class="hl opt">(</span>req<span class="hl opt">:</span>Request<span class="hl opt">,</span>res<span class="hl opt">:</span>Response<span class="hl opt">):</span>MaybeError <span class="hl opt">= {</span>
-<span class="hl lin"> 2 </span>    res match <span class="hl opt">{</span>
-<span class="hl lin"> 3 </span>      <span class="hl kwa">case</span> <span class="hl kwd">Value</span><span class="hl opt">(</span>s<span class="hl opt">) =&gt;</span> <span class="hl str">&quot;Wrapped!</span><span class="hl esc">\n\n</span><span class="hl str">%s</span><span class="hl esc">\n\n</span><span class="hl str">Wrapped!&quot;</span><span class="hl opt">.</span><span class="hl kwd">format</span><span class="hl opt">(</span>s<span class="hl opt">)</span>
-<span class="hl lin"> 4 </span>      <span class="hl kwa">case</span> s<span class="hl kwc">&#64;Stream</span><span class="hl opt">(</span>_<span class="hl opt">) =&gt;</span> s
-<span class="hl lin"> 5 </span>    <span class="hl opt">}</span>
-<span class="hl lin"> 6 </span>  <span class="hl opt">}</span>
-<span class="hl lin"> 7 </span>  
-<span class="hl lin"> 8 </span>  <span class="hl kwa">def</span> <span class="hl kwd">pipeline</span><span class="hl opt">(</span>handler<span class="hl opt">:</span>Request<span class="hl opt">=&gt;</span>MaybeError<span class="hl opt">,</span>
-<span class="hl lin"> 9 </span>               wrapper<span class="hl opt">:</span>Request<span class="hl opt">=&gt;</span>Response<span class="hl opt">=&gt;</span>MaybeError<span class="hl opt">) = {</span>
-<span class="hl lin">10 </span>    <span class="hl kwa">for</span> <span class="hl opt">{</span>
-<span class="hl lin">11 </span>      r1 <span class="hl opt">&lt;-</span> <span class="hl kwd">RequestMonad</span><span class="hl opt">(</span>handler<span class="hl opt">)</span>
-<span class="hl lin">12 </span>      r2 <span class="hl opt">&lt;-</span> <span class="hl kwd">wrapResponse</span><span class="hl opt">(</span>r1<span class="hl opt">,</span>wrapper<span class="hl opt">)</span>
-<span class="hl lin">13 </span>    <span class="hl opt">}</span> <span class="hl kwa">yield</span> r2
-<span class="hl lin">14 </span>  <span class="hl opt">}</span>
-</pre>
-      <ul class="incremental">
-        <li>Composing and wrapping</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>And the verdict is?</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>    <span class="hl kwa">val</span> processor2 <span class="hl opt">=</span> <span class="hl kwd">pipeline</span><span class="hl opt">(</span>handler1<span class="hl opt">,(</span>responseWrapper _<span class="hl opt">).</span>curried<span class="hl opt">)</span>
-<span class="hl lin"> 2 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor2</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-<span class="hl lin"> 3 </span>    <span class="hl kwd">resultDumper</span><span class="hl opt">(</span><span class="hl kwd">processor2</span><span class="hl opt">(</span><span class="hl kwd">Map</span><span class="hl opt">(</span><span class="hl str">&quot;arg1&quot;</span> <span class="hl opt">-&gt;</span> <span class="hl str">&quot;woo hoo!&quot;</span><span class="hl opt">)))</span>
-</pre>
-      <ul class="incremental">
-        <li><pre>&gt;&gt;&gt; Browser says: Wrapped!
-
-woo hoo!
-
-Wrapped!
-</pre></li>
-        <li>*** ERROR: Could not get value for:arg</li>
-      </ul>
-    </li>
-
-
 
     <li class="slide">
       <h1>Interesting Monads</h1>
