@@ -32,7 +32,7 @@ sup {font-size: smaller; line-height: 1px;}
 .slide ul ul li {margin: .2em; font-size: 85%; list-style: square;}
 .slide img.leader {display: block; margin: 0 auto;}
 
-div#header, div#footer {color: #666; font-family: Driad Sans, Verdana, Arial, Helvetica, sans-serif;}
+div#header, div#footer {color: #666; font-family: Droid Sans, Verdana, Arial, Helvetica, sans-serif;}
 div#header {background-color: transparent; line-height: 1px;}
 div#footer {background-color: transparent; font-size: 0.5em; font-weight: bold; padding: 1em 0;}
 #footer h1, #footer h2 {font-family: Droid Serif, Times New Roman, serif; border: none; display: block; padding: 0; position:absolute; bottom:0.5em;}
@@ -40,7 +40,7 @@ div#footer {background-color: transparent; font-size: 0.5em; font-weight: bold; 
 #footer h2 {right:1em; color: #666; font-style: italic;}
 
 div.long {font-size: 0.75em;}
-.slide h1 {position: absolute; top: 0.9em; left: 1.25em; z-index: 1; margin: 0.35em 0 0 50px; padding: 0; white-space: nowrap; font: bold 150%/1em Tahoma, Verdana, Arial, Helvetica, sans-serif; text-transform: capitalize; color: #fff; border-bottom: solid 0.1em red; background-color: transparent;}
+.slide h1 {position: absolute; top: 0.9em; left: 1.25em; z-index: 1; margin: 0.35em 0 0 50px; padding: 0; white-space: nowrap; font: bold 150%/1em 'Trebuchet MS', 'Droid Sans', Tahoma, Verdana, Arial, Helvetica, sans-serif; text-transform: capitalize; color: #fff; border-bottom: solid 0.1em red; background-color: transparent;}
 .slide h3 {font-size: 130%;}
 h1 abbr {font-variant: small-caps;}
 

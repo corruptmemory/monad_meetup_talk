@@ -118,6 +118,75 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
     </li>
 
     <li class="slide">
+      <h1>What is a Monad?</h1>
+      <table style="padding-top:0.8em;">
+        <tr>
+          <td><img class="scale" height="500" src="pix/greek-statue-1.jpg"/></td>
+          <td style="font-size:80%;padding-left:1em;"><b>Monad</b>, according to the Pythagoreans, was a term for God or the first being, or the totality of all beings, Monad being the source or the One meaning without division.<br/>
+            <a style="font-size:60%;" href="http://en.wikipedia.org/wiki/Monad_(Greek_philosophy)">http://en.wikipedia.org/wiki/Monad_(Greek_philosophy)</a></td>
+        </tr>
+      </table>
+    </li>
+
+    <li class="slide">
+      <h1>What is a Monad?</h1>
+      <table style="padding-top:0.8em;">
+        <tr>
+          <td><img class="scale" height="500" src="pix/Gottfried_Wilhelm_von_Leibniz.jpg"/></td>
+          <td style="font-size:80%;padding-left:1em;">The <b>Monad</b>, of which we shall here speak, is nothing but a simple substance, which enters into compounds. By 'simple' is meant 'without parts.'<br/>
+            <a style="font-size:60%;" href="http://www.rbjones.com/rbjpub/philos/classics/leibniz/monad.htm">The Monadology -- Gottfried Wilhelm von Leibniz</a></td>
+        </tr>
+      </table>
+    </li>
+
+    <li class="slide">
+      <h1>What is a Monad?</h1>
+      <div style="text-align:center;padding-top:0.6em;"><img height="70%" src="pix/monad_diagram.png" /><br/>
+        <a style="font-size:60%;" href="http://www.dcs.ed.ac.uk/home/dt/CT/categories.pdf">http://www.dcs.ed.ac.uk/home/dt/CT/categories.pdf</a></div>
+    </li>
+
+    <li class="slide">
+      <h1>What is a Monad?</h1>
+      <div style="text-align:center;padding-top:0.6em;"><img height="70%" src="pix/moggi.png" /><br/>
+        <a style="font-size:60%;" href="http://www.disi.unige.it/person/MoggiE/ftp/ic91.pdf">http://www.disi.unige.it/person/MoggiE/ftp/ic91.pdf</a>
+      </div>
+    </li>
+
+    <li class="slide">
+      <h1>Monads in Haskell</h1>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span>  Monad m  <span class="hl kwd">where</span>
+<span class="hl lin"> 2 </span>    <span class="hl opt">(&gt;&gt;=)       ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> m b<span class="hl opt">) -&gt;</span> m b
+<span class="hl lin"> 3 </span>    <span class="hl kwc">return</span>      <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> m a
+</pre>
+Where:
+    <ul>
+      <li><code>&gt;&gt;=</code> is called <i>bind</i></li>
+      <li><code>return</code> <i>injects</i> or <i>lifts</i> a <i>pure value</i> into the monad <code>m</code></li>
+    </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Monads in Haskell</h1>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span>  Monad m  <span class="hl kwd">where</span>
+<span class="hl lin"> 2 </span>    <span class="hl opt">(&gt;&gt;=)       ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> m b<span class="hl opt">) -&gt;</span> m b
+<span class="hl lin"> 3 </span>    <span class="hl kwc">return</span>      <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> m a
+</pre>
+     Must obey the following rules:
+     <ul>
+       <li><code>return</code> is a left and right identity of <code>&gt;&gt;=</code><br/>
+<pre class="hl"><span class="hl opt">(</span><span class="hl kwc">return</span> x<span class="hl opt">) &gt;&gt;=</span> f <span class="hl opt">≡</span> f x
+m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span class="hl opt">≡</span> m
+</pre></li>
+       <li><code>&gt;&gt;=</code>is associative<br/>
+<pre class="hl"><span class="hl opt">(</span>m <span class="hl opt">&gt;&gt;=</span> f<span class="hl opt">) &gt;&gt;=</span> g <span class="hl opt">≡</span> m <span class="hl opt">&gt;&gt;= ( \</span>x <span class="hl opt">-&gt; (</span>f x <span class="hl opt">&gt;&gt;=</span> g<span class="hl opt">) )</span>
+</pre></li>
+     </ul>
+    </li>
+
+
+
+
+    <li class="slide">
       <h1>Monads are Ubiquitous</h1>
       <ul>
         <li>Can be found in every language</li>
@@ -167,55 +236,7 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
       </ul>
     </li>
 
-    <li class="slide">
-      <h1>What is a Monad?</h1>
-      <table style="padding-top:0.8em;">
-        <tr>
-          <td><img class="scale" height="500" src="pix/greek-statue-1.jpg"/></td>
-          <td style="font-size:80%;padding-left:1em;"><b>Monad</b>, according to the Pythagoreans, was a term for God or the first being, or the totality of all beings, Monad being the source or the One meaning without division.<br/>
-            <a style="font-size:60%;" href="http://en.wikipedia.org/wiki/Monad_(Greek_philosophy)">http://en.wikipedia.org/wiki/Monad_(Greek_philosophy)</a></td>
-        </tr>
-      </table>
-    </li>
 
-    <li class="slide">
-      <h1>What is a Monad?</h1>
-      <table style="padding-top:0.8em;">
-        <tr>
-          <td><img class="scale" height="500" src="pix/Gottfried_Wilhelm_von_Leibniz.jpg"/></td>
-          <td style="font-size:80%;padding-left:1em;">The <b>Monad</b>, of which we shall here speak, is nothing but a simple substance, which enters into compounds. By 'simple' is meant 'without parts.'<br/>
-            <a style="font-size:60%;" href="http://www.rbjones.com/rbjpub/philos/classics/leibniz/monad.htm">The Monadology -- Gottfried Wilhelm von Leibniz</a></td>
-        </tr>
-      </table>
-    </li>
-
-    <li class="slide">
-      <h1>What is a Monad?</h1>
-      <div style="text-align:center;padding-top:0.6em;"><img height="70%" src="pix/monad_diagram.png" /><br/>
-        <a style="font-size:60%;" href="http://www.dcs.ed.ac.uk/home/dt/CT/categories.pdf">http://www.dcs.ed.ac.uk/home/dt/CT/categories.pdf</a></div>
-    </li>
-
-    <li class="slide">
-      <h1>What is a Monad?</h1>
-      <div style="text-align:center;padding-top:0.6em;"><img height="70%" src="pix/moggi.png" /><br/>
-        <a style="font-size:60%;" href="http://www.disi.unige.it/person/MoggiE/ftp/ic91.pdf">http://www.disi.unige.it/person/MoggiE/ftp/ic91.pdf</a>
-      </div>
-    </li>
-
-    <li class="slide">
-      <h1>Monads in Haskell</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span>  Monad m  <span class="hl kwd">where</span>
-<span class="hl lin"> 2 </span>    <span class="hl opt">(&gt;&gt;=)       ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> m b<span class="hl opt">) -&gt;</span> m b
-<span class="hl lin"> 3 </span>    <span class="hl opt">(&gt;&gt;)        ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt;</span> m b <span class="hl opt">-&gt;</span> m b
-<span class="hl lin"> 4 </span>    <span class="hl kwc">return</span>      <span class="hl opt">::</span> a <span class="hl opt">-&gt;</span> m a
-<span class="hl lin"> 5 </span>    <span class="hl kwc">fail</span>        <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> m a
-</pre>
-Must obey the following axioms:
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl opt">(</span><span class="hl kwc">return</span> x<span class="hl opt">) &gt;&gt;=</span> f <span class="hl opt">≡</span> f x
-<span class="hl lin"> 2 </span>m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span class="hl opt">≡</span> m
-<span class="hl lin"> 3 </span><span class="hl opt">(</span>m <span class="hl opt">&gt;&gt;=</span> f<span class="hl opt">) &gt;&gt;=</span> g <span class="hl opt">≡</span> m <span class="hl opt">&gt;&gt;= ( \</span>x <span class="hl opt">-&gt; (</span>f x <span class="hl opt">&gt;&gt;=</span> g<span class="hl opt">) )</span>
-</pre>
-    </li>
 
     <li class="slide">
       <h1>Motivation</h1>
