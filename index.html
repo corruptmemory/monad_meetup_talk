@@ -153,6 +153,82 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
     </li>
 
     <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>Datatypes</u> - A way to declare types and value constructors</li>
+        <li>Of the form:
+          <div style="padding-top:0.5em;font-family: Droid Sans Mono, fixed-width;color:#e3ceab;">
+            <div>data &lt;typename&gt; [&lt;parameters...&gt;] = &lt;value constructor&gt;</div>
+            <div style="padding-left:19em;">[ | &lt;value constructor&gt; ...]</div>
+          </div>
+        </li>
+        <li>Example:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> FuBar a b <span class="hl opt">=</span> Fu a | Bar b
+</pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>Newtype</u> - A special form of datatypes that have the following properties</li>
+        <li>Guarantees a single constructor</li>
+        <li>Guarantees that the single constructor has exactly one field</li>
+        <li>Examples:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> Groovy <span class="hl opt">=</span> G <span class="hl kwb">Int</span>
+<span class="hl lin"> 2 </span><span class="hl kwd">newtype</span> Fluffy a <span class="hl opt">=</span> FL a
+<span class="hl lin"> 3 </span>State s a <span class="hl opt">=</span> State <span class="hl opt">{</span> runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>s<span class="hl opt">,</span> a<span class="hl opt">) }</span>
+</pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>"Record" types</u> - A convenience facility to declare a type and named "field accessors"</li>
+        <li>Example:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> Vehicle <span class="hl opt">=</span> Vehicle <span class="hl opt">{</span>
+<span class="hl lin"> 2 </span>        wheels <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">,</span>
+<span class="hl lin"> 3 </span>        doors <span class="hl opt">::</span> <span class="hl kwb">Int</span><span class="hl opt">,</span>
+<span class="hl lin"> 4 </span>        seats <span class="hl opt">::</span> <span class="hl kwb">Int</span>
+<span class="hl lin"> 5 </span>      <span class="hl opt">}</span>
+</pre></li>
+        <li>Is translated by the compiler to:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> Vehicle <span class="hl opt">=</span> Vehicle <span class="hl kwb">Int Int Int</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span>wheels <span class="hl opt">::</span> Vehicle <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+<span class="hl lin"> 4 </span>wheels <span class="hl opt">(</span>Vehicle x _ _<span class="hl opt">) =</span> x
+<span class="hl lin"> 5 </span>
+<span class="hl lin"> 6 </span>doors <span class="hl opt">::</span> Vehicle <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+<span class="hl lin"> 7 </span>doors <span class="hl opt">(</span>Vehicle _ x _<span class="hl opt">) =</span> x
+<span class="hl lin"> 8 </span>
+<span class="hl lin"> 9 </span>seats <span class="hl opt">::</span> Vehicle <span class="hl opt">-&gt;</span> <span class="hl kwb">Int</span>
+<span class="hl lin">10 </span>seats <span class="hl opt">(</span>Vehicle _ _ x<span class="hl opt">) =</span> x
+</pre></li>
+      </ul>
+    </li>
+
+
+    <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>Typeclasses</u> - A way to statically address <i>ad hoc</i> (as opposed to <i>parametric</i>) polymorphism</li>
+        <li>Looks like:<br/>
+          <div style="padding-top:0.5em;font-family: Droid Sans Mono, fixed-width;color:#e3ceab;">
+            <div>class &lt;typeclass name&gt; &lt;parameter&gt; where</div>
+            <div style="padding-left:2em;">&lt;function name&gt; :: &lt;function signature&gt;</div>
+            <div style="padding-left:2em;">&lt;function name&gt; :: &lt;function signature&gt;</div>
+            <div style="padding-left:2em;">[...]</div>
+          </div></li>
+        <li>Default function implementations can be supplied</li>
+        <li>Example:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span> Functor f <span class="hl kwd">where</span>
+<span class="hl lin"> 2 </span>  <span class="hl kwc">fmap</span> <span class="hl opt">:: (</span>a <span class="hl opt">-&gt;</span> b<span class="hl opt">) -&gt;</span> f a <span class="hl opt">-&gt;</span> f b
+</pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
       <h1>Monads in Haskell</h1>
 <pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span>  Monad m  <span class="hl kwd">where</span>
 <span class="hl lin"> 2 </span>    <span class="hl opt">(&gt;&gt;=)       ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> m b<span class="hl opt">) -&gt;</span> m b
@@ -182,60 +258,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 </pre></li>
      </ul>
     </li>
-
-
-
-
-    <li class="slide">
-      <h1>Monads are Ubiquitous</h1>
-      <ul>
-        <li>Can be found in every language</li>
-        <li>In majority of languages monads are <i>implicit</i></li>
-      </ul>
-      <ul class="incremental">
-        <li>Much to be gained making monads <i>explicit</i></li>
-        <li>Exploiting their structures</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Examples</h1>
-    </li>
-
-    <li class="slide">
-      <h1>Examples</h1>
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl ppc">#include &lt;stdio.h&gt;</span>
-<span class="hl lin"> 2 </span><span class="hl ppc">#include &lt;string.h&gt;</span>
-<span class="hl lin"> 3 </span>
-<span class="hl lin"> 4 </span><span class="hl ppc">#define BUFSIZE 100</span>
-<span class="hl lin"> 5 </span>
-<span class="hl lin"> 6 </span><span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span><span class="hl kwb">char</span> <span class="hl opt">**</span>argv<span class="hl opt">) {</span>
-<span class="hl lin"> 7 </span>  <span class="hl kwb">char</span> buffer<span class="hl opt">[</span>BUFSIZE<span class="hl opt">];</span>
-<span class="hl lin"> 8 </span>  <span class="hl kwd">memset</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span>BUFSIZE<span class="hl opt">);</span>
-<span class="hl lin"> 9 </span>  <span class="hl kwd">fgets</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span>BUFSIZE<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span>stdin<span class="hl opt">);</span>
-<span class="hl lin">10 </span>  <span class="hl kwd">puts</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
-<span class="hl lin">11 </span>  <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
-<span class="hl lin">12 </span><span class="hl opt">}</span></pre>
-      <ul class="incremental">
-        <li>IO Monad</li>
-        <li><code>stdin</code> =&gt; Reader Monad</li>
-        <li><code>stdout, stderr</code> =&gt; Writer Monad</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Examples</h1>
-<pre class="hl"><span class="hl lin"> 1 </span>things <span class="hl opt">= [</span><span class="hl str">&quot;monads&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;arrows&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;morphisms&quot;</span><span class="hl opt">]</span>
-<span class="hl lin"> 2 </span>descriptions <span class="hl opt">= [</span><span class="hl str">&quot;rule&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;confound&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;enlighten&quot;</span><span class="hl opt">]</span>
-<span class="hl lin"> 3 </span><span class="hl kwa">print</span> <span class="hl opt">[</span>a<span class="hl opt">+</span><span class="hl str">&quot; &quot;</span><span class="hl opt">+</span>b <span class="hl kwa">for</span> a <span class="hl kwa">in</span> things <span class="hl kwa">for</span> b <span class="hl kwa">in</span> descriptions<span class="hl opt">]</span></pre>
-      <ul class="incremental">
-        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl opt">[</span><span class="hl str">'monads rule'</span><span class="hl opt">,</span> <span class="hl str">'monads confound'</span><span class="hl opt">,</span> <span class="hl str">'monads enlighten'</span><span class="hl opt">,</span> 
-<span class="hl lin"> 2 </span> <span class="hl str">'arrows rule'</span><span class="hl opt">,</span> <span class="hl str">'arrows confound'</span><span class="hl opt">,</span> <span class="hl str">'arrows enlighten'</span><span class="hl opt">,</span>
-<span class="hl lin"> 3 </span> <span class="hl str">'morphisms rule'</span><span class="hl opt">,</span> <span class="hl str">'morphisms confound'</span><span class="hl opt">,</span> <span class="hl str">'morphisms enlighten'</span><span class="hl opt">]</span></pre></li>
-        <li>List Monad</li>
-      </ul>
-    </li>
-
 
 
     <li class="slide">
@@ -374,6 +396,14 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 </pre></li>
         <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl opt">[(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">),(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">),(</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">),(</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">),(</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">),(</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">),(</span><span class="hl num">3</span><span class="hl opt">,</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">),(</span><span class="hl num">3</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">),(</span><span class="hl num">3</span><span class="hl opt">,</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">)]</span>
 </pre></li>
+        <li>Example using choice.  Define:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>chooseN <span class="hl opt">::</span> <span class="hl kwb">Int</span> <span class="hl opt">-&gt; [(</span><span class="hl kwb">Int</span><span class="hl opt">,</span><span class="hl kwb">Int</span><span class="hl opt">)] -&gt; [(</span><span class="hl kwb">Int</span><span class="hl opt">,</span><span class="hl kwb">Int</span><span class="hl opt">)]</span>
+<span class="hl lin"> 2 </span>chooseN n p <span class="hl opt">=</span> <span class="hl kwc">filter</span> <span class="hl opt">(\(</span>x<span class="hl opt">,</span>y<span class="hl opt">) -&gt; ((</span>x<span class="hl opt">*</span>y<span class="hl opt">)</span> `<span class="hl kwc">mod</span>` n<span class="hl opt">) ==</span> <span class="hl num">0</span><span class="hl opt">)</span> p
+</pre></li>
+        <li>Now try:<br/>
+<pre class="hl">chooseN <span class="hl num">8</span> <span class="hl opt">$</span> pairs <span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">,</span><span class="hl num">2</span><span class="hl opt">,</span><span class="hl num">3</span><span class="hl opt">] [</span><span class="hl num">4</span><span class="hl opt">,</span><span class="hl num">5</span><span class="hl opt">,</span><span class="hl num">6</span>
+</pre></li>
+        <li>Result: <code>[(2,4)]</code></li>
       </ul>
     </li>
 
@@ -402,22 +432,6 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <span class="hl lin"> 3 </span><span class="hl slc">-- runReader f = Reader f</span>
 <span class="hl lin"> 4 </span>runReader <span class="hl opt">=</span> Reader
 </pre></li>
-        <li><code>newtype</code> instructs the compiler to treat <code>Reader</code> as a completely unique type. <code>newtype</code> ensures that there is <i>exactly</i> one value constructor with <i>exactly</i> one field.</li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Reader Monad</h1>
-      A Reader Monad threads a common value through a computation
-<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> Reader r a <span class="hl opt">=</span> Reader <span class="hl opt">{</span>
-<span class="hl lin"> 2 </span>  runReader <span class="hl opt">::</span> r <span class="hl opt">-&gt;</span> a
-<span class="hl lin"> 3 </span><span class="hl opt">}</span>
-<span class="hl lin"> 4 </span>
-<span class="hl lin"> 5 </span><span class="hl kwd">instance</span> Monad <span class="hl opt">(</span>Reader r<span class="hl opt">)</span> <span class="hl kwd">where</span>
-<span class="hl lin"> 6 </span>  <span class="hl kwc">return</span> a <span class="hl opt">=</span> Reader <span class="hl opt">$ \</span>_ <span class="hl opt">-&gt;</span> a
-<span class="hl lin"> 7 </span>  m <span class="hl opt">&gt;&gt;=</span> k  <span class="hl opt">=</span> Reader <span class="hl opt">$</span> <span class="hl esc">\r</span> <span class="hl opt">-&gt;</span> runReader <span class="hl opt">(</span>k <span class="hl opt">(</span>runReader m r<span class="hl opt">))</span> r
-</pre>
-      <ul class="incremental">
         <li><code>(Reader r)</code> is a <i>partially applied <u>type constructor</u></i></li>
         <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl opt">(&gt;&gt;=) ::</span> <span class="hl kwd">forall</span> a b<span class="hl opt">.</span> m a <span class="hl opt">-&gt; (</span>a <span class="hl opt">-&gt;</span> m b<span class="hl opt">) -&gt;</span> m b
 </pre></li>
@@ -488,10 +502,10 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <span class="hl lin"> 7 </span><span class="hl kwd">import</span> Control<span class="hl opt">.</span>Monad<span class="hl opt">.</span>Instances
 <span class="hl lin"> 8 </span>
 <span class="hl lin"> 9 </span>goodRequest <span class="hl opt">::</span> Request
-<span class="hl lin">10 </span>goodRequest <span class="hl opt">= [(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">)]</span>
+<span class="hl lin">10 </span>goodRequest <span class="hl opt">= [(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;a-arg&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b-arg&quot;</span><span class="hl opt">)]</span>
 <span class="hl lin">11 </span>
 <span class="hl lin">12 </span>badRequest <span class="hl opt">::</span> Request
-<span class="hl lin">13 </span>badRequest <span class="hl opt">= [(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">)]</span>
+<span class="hl lin">13 </span>badRequest <span class="hl opt">= [(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b-arg&quot;</span><span class="hl opt">)]</span>
 <span class="hl lin">14 </span>
 <span class="hl lin">15 </span>handler <span class="hl opt">::</span> Reader Request Response
 <span class="hl lin">16 </span>handler <span class="hl opt">=</span> <span class="hl kwd">do</span>
@@ -514,10 +528,156 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
 <span class="hl lin"> 4 </span>  <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwc">show</span> <span class="hl opt">$</span> browser badRequest
 </pre>
     <ul class="incremental">
-      <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl str">&quot;Page rendered STRING: a&quot;</span>
-<span class="hl lin"> 2 </span><span class="hl str">&quot;BZZT! Invalid request: Could not find value for:a&quot;</span>
-</pre></li>
+      <li>goodRequest -&gt; <code>Page rendered STRING: a-arg</code></li>
+      <li>badRequest -&gt; <code>BZZT! Invalid request: Could not find value for:a</code></li>
     </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Cool! How about authorizing requests?</h1>
+      <ul class="incremental">
+        <li>We will need the <code>State</code> monad</li>
+        <li>More specifically the <code>State</code> monad <i>transformer</i>: <code>StateT</code></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Monad transformers</h1>
+      A technique for <i>stacking</i> monads in a composable way.
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
+        <li>A new State-infused monad<br/>
+<pre class="hl"><span class="hl kwd">type</span> MyState a <span class="hl opt">=</span> StateT AppState <span class="hl opt">(</span>Reader Request<span class="hl opt">)</span> a</pre>
+        </li>
+        <li>A <i>lifted</i> version of our request reader:<br/>
+<pre class="hl">lMyRead <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">)</span>
+lMyRead k <span class="hl opt">=</span> lift <span class="hl opt">$</span> myRead k</pre>
+        </li>
+        <li>A user database<br/>
+<pre class="hl">userDB <span class="hl opt">::</span> UserDB
+userDB <span class="hl opt">=</span> addUser <span class="hl opt">(</span>mkUser <span class="hl str">&quot;foo&quot;</span> <span class="hl str">&quot;secret&quot;</span><span class="hl opt">)</span> emptyUserDb</pre>
+        </li>
+        <li>A function to examine authorization:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>authorized <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> MyState <span class="hl opt">()</span>
+<span class="hl lin"> 2 </span>authorized udb <span class="hl opt">=</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 3 </span>  username <span class="hl opt">&lt;-</span> lMyRead <span class="hl str">&quot;username&quot;</span>
+<span class="hl lin"> 4 </span>  password <span class="hl opt">&lt;-</span> lMyRead <span class="hl str">&quot;password&quot;</span>
+<span class="hl lin"> 5 </span>  <span class="hl kwd">let</span> user <span class="hl opt">=</span> <span class="hl kwd">case</span> <span class="hl opt">(</span>username<span class="hl opt">,</span>password<span class="hl opt">)</span> <span class="hl kwd">of</span>
+<span class="hl lin"> 6 </span>                 <span class="hl opt">(</span>Right<span class="hl opt">(</span>un<span class="hl opt">),</span>Right<span class="hl opt">(</span>pw<span class="hl opt">)) -&gt;</span> findUser un pw udb
+<span class="hl lin"> 7 </span>                 <span class="hl kwc">otherwise</span> <span class="hl opt">-&gt;</span> Nothing</pre>
+        </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
+        <li>A <i>combinator</i> to branch on authorized access:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>ifAuthorized <span class="hl opt">::</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">) -&gt;</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">) -&gt;</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">)</span>
+<span class="hl lin"> 2 </span>ifAuthorized a b <span class="hl opt">=</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 3 </span>  state <span class="hl opt">&lt;-</span> get
+<span class="hl lin"> 4 </span>  <span class="hl kwd">if</span> <span class="hl opt">(</span><span class="hl kwc">isJust</span> <span class="hl opt">(</span>user state<span class="hl opt">))</span> 
+<span class="hl lin"> 5 </span>    <span class="hl kwd">then</span> a 
+<span class="hl lin"> 6 </span>    <span class="hl kwd">else</span> b</pre>
+        </li>
+        <li>An updated handler that takes in a user db:
+<pre class="hl"><span class="hl lin"> 1 </span>handler <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> MyState Response
+<span class="hl lin"> 2 </span>handler udb <span class="hl opt">=</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 3 </span>  authorized udb
+<span class="hl lin"> 4 </span>  a <span class="hl opt">&lt;-</span> ifAuthorized <span class="hl opt">(</span>lMyRead <span class="hl str">&quot;a&quot;</span><span class="hl opt">) (</span>lMyRead <span class="hl str">&quot;b&quot;</span><span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>  <span class="hl kwc">return</span> <span class="hl opt">(</span><span class="hl kwc">fmap</span> Value a<span class="hl opt">)</span></pre>
+        </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
+        <li>An updated browser simulation:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>browser <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> Request <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span>
+<span class="hl lin"> 2 </span>browser udb r <span class="hl opt">=</span> <span class="hl kwd">case</span> <span class="hl opt">(</span>runReader <span class="hl opt">(</span>evalStateT <span class="hl opt">(</span>handler udb<span class="hl opt">)</span> newAppState<span class="hl opt">)</span>  r<span class="hl opt">)</span> <span class="hl kwd">of</span>
+<span class="hl lin"> 3 </span>                  Right <span class="hl opt">(</span>Value v<span class="hl opt">) -&gt;</span> <span class="hl str">&quot;Page rendered STRING: &quot;</span><span class="hl opt">++</span>v
+<span class="hl lin"> 4 </span>                  Right <span class="hl opt">(</span>Stream vs<span class="hl opt">) -&gt;</span> <span class="hl str">&quot;Page rendered STREAM: &quot;</span><span class="hl opt">++(</span><span class="hl kwc">show</span> vs<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>                  Left v <span class="hl opt">-&gt;</span> <span class="hl str">&quot;BZZT! Invalid request: &quot;</span><span class="hl opt">++</span>v</pre>
+        </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Let's take her for a spin!</h1>
+<pre class="hl"><span class="hl lin"> 1 </span>authorizedRequest <span class="hl opt">::</span> Request
+<span class="hl lin"> 2 </span>authorizedRequest <span class="hl opt">= [(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;a-arg&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b-arg&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;username&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;foo&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;password&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;secret&quot;</span><span class="hl opt">)]</span>
+<span class="hl lin"> 3 </span>
+<span class="hl lin"> 4 </span>anonymousRequest <span class="hl opt">::</span> Request
+<span class="hl lin"> 5 </span>anonymousRequest <span class="hl opt">= [(</span><span class="hl str">&quot;a&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;a-arg&quot;</span><span class="hl opt">),(</span><span class="hl str">&quot;b&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;b-arg&quot;</span><span class="hl opt">)]</span>
+<span class="hl lin"> 6 </span>
+<span class="hl lin"> 7 </span>badRequest <span class="hl opt">::</span> Request
+<span class="hl lin"> 8 </span>badRequest <span class="hl opt">= [(</span><span class="hl str">&quot;c&quot;</span><span class="hl opt">,</span><span class="hl str">&quot;c-arg&quot;</span><span class="hl opt">)]</span>
+<span class="hl lin"> 9 </span>
+<span class="hl lin">10 </span>main<span class="hl opt">::</span><span class="hl kwb">IO</span><span class="hl opt">()</span>
+<span class="hl lin">11 </span>main <span class="hl opt">=</span> <span class="hl kwd">do</span>
+<span class="hl lin">12 </span>  <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwc">show</span> <span class="hl opt">$</span> browser userDB authorizedRequest
+<span class="hl lin">13 </span>  <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwc">show</span> <span class="hl opt">$</span> browser userDB anonymousRequest
+<span class="hl lin">14 </span>  <span class="hl kwc">putStrLn</span> <span class="hl opt">$</span> <span class="hl kwc">show</span> <span class="hl opt">$</span> browser userDB badRequest</pre>
+      <ul class="incremental">
+        <li>authorizedRequest -> <code>Page rendered STRING: a-arg</code></li>
+        <li>anonymousRequest -> <code>Page rendered STRING: b-arg</code></li>
+        <li>badRequest -> <code>BZZT! Invalid request: Could not find value for:b</code></li>
+      </ul>
+    </li>
+
+
+    <li class="slide">
+      <h1>Monads are Ubiquitous</h1>
+      <ul>
+        <li>Can be found in every language</li>
+        <li>In majority of languages monads are <i>implicit</i></li>
+      </ul>
+      <ul class="incremental">
+        <li>Much to be gained making monads <i>explicit</i></li>
+        <li>Exploiting their structures</li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Examples</h1>
+    </li>
+
+    <li class="slide">
+      <h1>Examples</h1>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl ppc">#include &lt;stdio.h&gt;</span>
+<span class="hl lin"> 2 </span><span class="hl ppc">#include &lt;string.h&gt;</span>
+<span class="hl lin"> 3 </span>
+<span class="hl lin"> 4 </span><span class="hl ppc">#define BUFSIZE 100</span>
+<span class="hl lin"> 5 </span>
+<span class="hl lin"> 6 </span><span class="hl kwb">int</span> <span class="hl kwd">main</span><span class="hl opt">(</span><span class="hl kwb">int</span> argc<span class="hl opt">,</span><span class="hl kwb">char</span> <span class="hl opt">**</span>argv<span class="hl opt">) {</span>
+<span class="hl lin"> 7 </span>  <span class="hl kwb">char</span> buffer<span class="hl opt">[</span>BUFSIZE<span class="hl opt">];</span>
+<span class="hl lin"> 8 </span>  <span class="hl kwd">memset</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span><span class="hl num">0</span><span class="hl opt">,</span>BUFSIZE<span class="hl opt">);</span>
+<span class="hl lin"> 9 </span>  <span class="hl kwd">fgets</span><span class="hl opt">(</span>buffer<span class="hl opt">,</span>BUFSIZE<span class="hl opt">-</span><span class="hl num">1</span><span class="hl opt">,</span>stdin<span class="hl opt">);</span>
+<span class="hl lin">10 </span>  <span class="hl kwd">puts</span><span class="hl opt">(</span>buffer<span class="hl opt">);</span>
+<span class="hl lin">11 </span>  <span class="hl kwa">return</span> <span class="hl num">0</span><span class="hl opt">;</span>
+<span class="hl lin">12 </span><span class="hl opt">}</span></pre>
+      <ul class="incremental">
+        <li>IO Monad</li>
+        <li><code>stdin</code> =&gt; Reader Monad</li>
+        <li><code>stdout, stderr</code> =&gt; Writer Monad</li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Examples</h1>
+<pre class="hl"><span class="hl lin"> 1 </span>things <span class="hl opt">= [</span><span class="hl str">&quot;monads&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;arrows&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;morphisms&quot;</span><span class="hl opt">]</span>
+<span class="hl lin"> 2 </span>descriptions <span class="hl opt">= [</span><span class="hl str">&quot;rule&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;confound&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;enlighten&quot;</span><span class="hl opt">]</span>
+<span class="hl lin"> 3 </span><span class="hl kwa">print</span> <span class="hl opt">[</span>a<span class="hl opt">+</span><span class="hl str">&quot; &quot;</span><span class="hl opt">+</span>b <span class="hl kwa">for</span> a <span class="hl kwa">in</span> things <span class="hl kwa">for</span> b <span class="hl kwa">in</span> descriptions<span class="hl opt">]</span></pre>
+      <ul class="incremental">
+        <li><pre class="hl"><span class="hl lin"> 1 </span><span class="hl opt">[</span><span class="hl str">'monads rule'</span><span class="hl opt">,</span> <span class="hl str">'monads confound'</span><span class="hl opt">,</span> <span class="hl str">'monads enlighten'</span><span class="hl opt">,</span> 
+<span class="hl lin"> 2 </span> <span class="hl str">'arrows rule'</span><span class="hl opt">,</span> <span class="hl str">'arrows confound'</span><span class="hl opt">,</span> <span class="hl str">'arrows enlighten'</span><span class="hl opt">,</span>
+<span class="hl lin"> 3 </span> <span class="hl str">'morphisms rule'</span><span class="hl opt">,</span> <span class="hl str">'morphisms confound'</span><span class="hl opt">,</span> <span class="hl str">'morphisms enlighten'</span><span class="hl opt">]</span></pre></li>
+        <li>List Monad</li>
+      </ul>
     </li>
 
     <li class="slide">
@@ -566,6 +726,12 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
       </table>
       <div style="text-align:center;padding-top:0.6em;"><a style="font-size:10pt;" href="http://www.haskell.org/haskellwiki/Monad#Fun">http://www.haskell.org/haskellwiki/Monad#Fun</a></div>
     </li>
+
+    <li class="slide">
+      <div style="text-align:center;padding-top:1em;font-size:200%;">FIN</div>
+      <div style="text-align:center;padding-top:1em;font-size:150%;"><img style="vertical-align:middle;" src="pix/logo.png"/> is hiring!: <a href="http://www.patch.com/jobs" rel="external">http://www.patch.com/jobs</a></div>
+    </li>
+
   </ol>
 </body>
 </html>
