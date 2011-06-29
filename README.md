@@ -15,17 +15,13 @@ Online:
 
 Books:
 
-_My personal favorite:_
-
-* [Introduction to Functional Programming using Haskell (2nd Edition)](http://www.amazon.com/Introduction-Functional-Programming-using-Haskell/dp/0134843460)<br>
+* _My personal favorite:_ [Introduction to Functional Programming using Haskell (2nd Edition)](http://www.amazon.com/Introduction-Functional-Programming-using-Haskell/dp/0134843460)<br>
   Author: Richard Bird<br>
   http://www.amazon.com/Introduction-Functional-Programming-using-Haskell/dp/0134843460
   
 Papers:
 
-_Fantastic!_
-
-* [The Essence of Functional Programming](http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps)<br>
+* _Fantastic:_ [The Essence of Functional Programming](http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps)<br>
   Author: Philip Wadler<br>
   http://homepages.inf.ed.ac.uk/wadler/papers/essence/essence.ps
   
