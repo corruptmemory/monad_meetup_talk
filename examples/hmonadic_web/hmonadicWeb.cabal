@@ -1,0 +1,51 @@
+name: hmonadicWeb
+version: 0.1
+cabal-version: >=1.2
+build-type: Simple
+license: BSD3
+license-file: LICENSE
+copyright: 2011 (C) Jim Powers
+maintainer: Jim Powers <jim@corruptmemory.com>
+build-depends: base >=4.3 && <4.4, mtl >=2.0
+stability:
+homepage:
+package-url:
+bug-reports:
+synopsis: Fake web request processing system
+description: A simple educational example showing the use of Monads in Haskell
+category: Development
+author: Jim Powers <jim@corruptmemory.com>
+tested-with:
+data-files:
+data-dir: ""
+extra-source-files:
+extra-tmp-files:
+ 
+executable: hmonadic_web
+main-is: Main.hs
+buildable: True
+build-tools:
+cpp-options:
+cc-options:
+ld-options:
+pkgconfig-depends:
+frameworks:
+c-sources:
+default-language:
+other-languages:
+default-extensions:
+other-extensions:
+extensions:
+extra-libraries:
+extra-lib-dirs:
+includes:
+install-includes:
+include-dirs:
+hs-source-dirs: src
+other-modules: RequestReader Request Response
+ghc-prof-options:
+ghc-shared-options:
+ghc-options:
+hugs-options:
+nhc98-options:
+jhc-options:
