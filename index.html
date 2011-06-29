@@ -177,7 +177,7 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
         <li>Examples:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> Groovy <span class="hl opt">=</span> G <span class="hl kwb">Int</span>
 <span class="hl lin"> 2 </span><span class="hl kwd">newtype</span> Fluffy a <span class="hl opt">=</span> FL a
-<span class="hl lin"> 3 </span>State s a <span class="hl opt">=</span> State <span class="hl opt">{</span> runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>s<span class="hl opt">,</span> a<span class="hl opt">) }</span>
+<span class="hl lin"> 3 </span><span class="hl kwd">newtype</span> State s a <span class="hl opt">=</span> State <span class="hl opt">{</span> runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>s<span class="hl opt">,</span> a<span class="hl opt">) }</span>
 </pre></li>
       </ul>
     </li>
@@ -193,6 +193,13 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
 <span class="hl lin"> 4 </span>        seats <span class="hl opt">::</span> <span class="hl kwb">Int</span>
 <span class="hl lin"> 5 </span>      <span class="hl opt">}</span>
 </pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>"Record" types</u> - A convenience facility to declare a type and named "field accessors"</li>
         <li>Is translated by the compiler to:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> Vehicle <span class="hl opt">=</span> Vehicle <span class="hl kwb">Int Int Int</span>
 <span class="hl lin"> 2 </span>
@@ -220,7 +227,13 @@ pre.hl	{ color:#dcdccc; background-color:#1f1f1f; font-size:16pt; font-family:'D
             <div style="padding-left:2em;">&lt;function name&gt; :: &lt;function signature&gt;</div>
             <div style="padding-left:2em;">[...]</div>
           </div></li>
-        <li>Default function implementations can be supplied</li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Haskell Basics</h1>
+      <ul>
+        <li><u>Typeclasses</u> - A way to statically address <i>ad hoc</i> (as opposed to <i>parametric</i>) polymorphism</li>
         <li>Example:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span> Functor f <span class="hl kwd">where</span>
 <span class="hl lin"> 2 </span>  <span class="hl kwc">fmap</span> <span class="hl opt">:: (</span>a <span class="hl opt">-&gt;</span> b<span class="hl opt">) -&gt;</span> f a <span class="hl opt">-&gt;</span> f b
@@ -545,6 +558,110 @@ m <span class="hl opt">&gt;&gt;=</span> <span class="hl kwc">return</span> <span
       <h1>Monad transformers</h1>
       A technique for <i>stacking</i> monads in a composable way.
     </li>
+ 
+    <li class="slide">
+      <h1>The State Monad</h1>
+      Used to model mutable state in a computation.
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> State s a <span class="hl opt">=</span> State <span class="hl opt">{</span> runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>a<span class="hl opt">,</span> s<span class="hl opt">) }</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span><span class="hl kwd">instance</span> Monad <span class="hl opt">(</span>State s<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 4 </span>    <span class="hl kwc">return</span> a <span class="hl opt">=</span> State <span class="hl opt">$ \</span>s <span class="hl opt">-&gt; (</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>    m <span class="hl opt">&gt;&gt;=</span> k  <span class="hl opt">=</span> State <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">let</span>
+<span class="hl lin"> 6 </span>        <span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">') =</span> runState m s
+<span class="hl lin"> 7 </span>        <span class="hl kwd">in</span> runState <span class="hl opt">(</span>k a<span class="hl opt">)</span> s<span class="hl opt">'</span></pre>
+      <ul class="incremental">
+        <li>Creating instances of the State monad:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span>evalState <span class="hl opt">::</span> State s a <span class="hl opt">-&gt;</span> s <span class="hl opt">-&gt;</span> a
+<span class="hl lin"> 4 </span>evalState m s <span class="hl opt">=</span> <span class="hl kwc">fst</span> <span class="hl opt">(</span>runState m s<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>
+<span class="hl lin"> 6 </span>execState <span class="hl opt">::</span> State s a <span class="hl opt">-&gt;</span> s <span class="hl opt">-&gt;</span> s
+<span class="hl lin"> 7 </span>execState m s <span class="hl opt">=</span> <span class="hl kwc">snd</span> <span class="hl opt">(</span>runState m s<span class="hl opt">)</span></pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>The State Monad</h1>
+      Used to model mutable state in a computation.
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> State s a <span class="hl opt">=</span> State <span class="hl opt">{</span> runState <span class="hl opt">::</span> s <span class="hl opt">-&gt; (</span>a<span class="hl opt">,</span> s<span class="hl opt">) }</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span><span class="hl kwd">instance</span> Monad <span class="hl opt">(</span>State s<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 4 </span>    <span class="hl kwc">return</span> a <span class="hl opt">=</span> State <span class="hl opt">$ \</span>s <span class="hl opt">-&gt; (</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>    m <span class="hl opt">&gt;&gt;=</span> k  <span class="hl opt">=</span> State <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">let</span>
+<span class="hl lin"> 6 </span>        <span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">') =</span> runState m s
+<span class="hl lin"> 7 </span>        <span class="hl kwd">in</span> runState <span class="hl opt">(</span>k a<span class="hl opt">)</span> s<span class="hl opt">'</span></pre>
+      <ul>
+        <li>The primary operations that can be performed on a state:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">instance</span> MonadState s <span class="hl opt">(</span>State s<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 2 </span>    get   <span class="hl opt">=</span> State <span class="hl opt">$ \</span>s <span class="hl opt">-&gt; (</span>s<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 3 </span>    put s <span class="hl opt">=</span> State <span class="hl opt">$ \</span>_ <span class="hl opt">-&gt; ((),</span> s<span class="hl opt">)</span></pre></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>The StateT Monad <i>transformer</i></h1>
+      Used to <i>stack</i> a State monad on top of another monad.
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> StateT s m a <span class="hl opt">=</span> StateT <span class="hl opt">{</span> runStateT <span class="hl opt">::</span> s <span class="hl opt">-&gt;</span> m <span class="hl opt">(</span>a<span class="hl opt">,</span>s<span class="hl opt">) }</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span><span class="hl kwd">instance</span> <span class="hl opt">(</span>Monad m<span class="hl opt">) =&gt;</span> Monad <span class="hl opt">(</span>StateT s m<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 4 </span>    <span class="hl kwc">return</span> a <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwc">return</span> <span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>    m <span class="hl opt">&gt;&gt;=</span> k  <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 6 </span>        ~<span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">') &lt;-</span> runStateT m s
+<span class="hl lin"> 7 </span>        runStateT <span class="hl opt">(</span>k a<span class="hl opt">)</span> s<span class="hl opt">'</span>
+<span class="hl lin"> 8 </span>    <span class="hl kwc">fail</span> str <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>_ <span class="hl opt">-&gt;</span> <span class="hl kwc">fail</span> str</pre>
+      <ul>
+        <li>Resulting monad looks like a <code>State</code> monad with all the same operations</li>
+        <li>To get access to the <i>wrapped</i> monad use a function called <i>lift</i><ul>
+            <li>This is called <i>lifting</i> a function into a monad.</li>
+        </ul></li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>The StateT Monad <i>transformer</i></h1>
+      Used to <i>stack</i> a State monad on top of another monad.
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">newtype</span> StateT s m a <span class="hl opt">=</span> StateT <span class="hl opt">{</span> runStateT <span class="hl opt">::</span> s <span class="hl opt">-&gt;</span> m <span class="hl opt">(</span>a<span class="hl opt">,</span>s<span class="hl opt">) }</span>
+<span class="hl lin"> 2 </span>
+<span class="hl lin"> 3 </span><span class="hl kwd">instance</span> <span class="hl opt">(</span>Monad m<span class="hl opt">) =&gt;</span> Monad <span class="hl opt">(</span>StateT s m<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 4 </span>    <span class="hl kwc">return</span> a <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwc">return</span> <span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span>
+<span class="hl lin"> 5 </span>    m <span class="hl opt">&gt;&gt;=</span> k  <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 6 </span>        ~<span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">') &lt;-</span> runStateT m s
+<span class="hl lin"> 7 </span>        runStateT <span class="hl opt">(</span>k a<span class="hl opt">)</span> s<span class="hl opt">'</span>
+<span class="hl lin"> 8 </span>    <span class="hl kwc">fail</span> str <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>_ <span class="hl opt">-&gt;</span> <span class="hl kwc">fail</span> str</pre>
+      <ul>
+        <li>Here's how <i>lift</i> works:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">class</span> MonadTrans t <span class="hl kwd">where</span>
+<span class="hl lin"> 2 </span>    lift <span class="hl opt">::</span> Monad m <span class="hl opt">=&gt;</span> m a <span class="hl opt">-&gt;</span> t m a
+<span class="hl lin"> 3 </span>
+<span class="hl lin"> 4 </span><span class="hl kwd">instance</span> MonadTrans <span class="hl opt">(</span>StateT s<span class="hl opt">)</span> <span class="hl kwd">where</span>
+<span class="hl lin"> 5 </span>    lift m <span class="hl opt">=</span> StateT <span class="hl opt">$ \</span>s <span class="hl opt">-&gt;</span> <span class="hl kwd">do</span>
+<span class="hl lin"> 6 </span>        a <span class="hl opt">&lt;-</span> m
+<span class="hl lin"> 7 </span>        <span class="hl kwc">return</span> <span class="hl opt">(</span>a<span class="hl opt">,</span> s<span class="hl opt">)</span></pre></li>
+      </ul>
+    </li>
+
+
+
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
+        <li>Our user and user DB data structures:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> User <span class="hl opt">=</span> User <span class="hl opt">{</span>
+<span class="hl lin"> 2 </span>  username <span class="hl opt">::</span> <span class="hl kwb">String</span><span class="hl opt">,</span>
+<span class="hl lin"> 3 </span>  password <span class="hl opt">::</span> <span class="hl kwb">String</span>
+<span class="hl lin"> 4 </span><span class="hl opt">}</span>
+<span class="hl lin"> 5 </span>
+<span class="hl lin"> 6 </span><span class="hl kwd">type</span> UserDB <span class="hl opt">= [</span>User<span class="hl opt">]</span></pre>
+        </li>
+        <li>Our state:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span><span class="hl kwd">data</span> AppState <span class="hl opt">=</span> AppState <span class="hl opt">{</span>
+<span class="hl lin"> 2 </span>  user <span class="hl opt">::</span> <span class="hl kwb">Maybe</span> User
+<span class="hl lin"> 3 </span><span class="hl opt">}</span></pre>
+        </li>
+      </ul>
+    </li>
 
     <li class="slide">
       <h1>Ch-Ch-Ch-Changes</h1>
@@ -560,6 +677,12 @@ lMyRead k <span class="hl opt">=</span> lift <span class="hl opt">$</span> myRea
 <pre class="hl">userDB <span class="hl opt">::</span> UserDB
 userDB <span class="hl opt">=</span> addUser <span class="hl opt">(</span>mkUser <span class="hl str">&quot;foo&quot;</span> <span class="hl str">&quot;secret&quot;</span><span class="hl opt">)</span> emptyUserDb</pre>
         </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
         <li>A function to examine authorization:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span>authorized <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> MyState <span class="hl opt">()</span>
 <span class="hl lin"> 2 </span>authorized udb <span class="hl opt">=</span> <span class="hl kwd">do</span>
@@ -567,14 +690,11 @@ userDB <span class="hl opt">=</span> addUser <span class="hl opt">(</span>mkUser
 <span class="hl lin"> 4 </span>  password <span class="hl opt">&lt;-</span> lMyRead <span class="hl str">&quot;password&quot;</span>
 <span class="hl lin"> 5 </span>  <span class="hl kwd">let</span> user <span class="hl opt">=</span> <span class="hl kwd">case</span> <span class="hl opt">(</span>username<span class="hl opt">,</span>password<span class="hl opt">)</span> <span class="hl kwd">of</span>
 <span class="hl lin"> 6 </span>                 <span class="hl opt">(</span>Right<span class="hl opt">(</span>un<span class="hl opt">),</span>Right<span class="hl opt">(</span>pw<span class="hl opt">)) -&gt;</span> findUser un pw udb
-<span class="hl lin"> 7 </span>                 <span class="hl kwc">otherwise</span> <span class="hl opt">-&gt;</span> Nothing</pre>
+<span class="hl lin"> 7 </span>                 <span class="hl kwc">otherwise</span> <span class="hl opt">-&gt;</span> Nothing
+<span class="hl lin"> 8 </span>  state <span class="hl opt">&lt;-</span> get
+<span class="hl lin"> 9 </span>  put <span class="hl opt">$</span> updateUser user state
+<span class="hl lin">10 </span>  <span class="hl kwc">return</span> <span class="hl opt">()</span></pre>
         </li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Ch-Ch-Ch-Changes</h1>
-      <ul class="incremental">
         <li>A <i>combinator</i> to branch on authorized access:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span>ifAuthorized <span class="hl opt">::</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">) -&gt;</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">) -&gt;</span> MyState <span class="hl opt">(</span>ReadResult <span class="hl kwb">String</span><span class="hl opt">)</span>
 <span class="hl lin"> 2 </span>ifAuthorized a b <span class="hl opt">=</span> <span class="hl kwd">do</span>
@@ -583,6 +703,12 @@ userDB <span class="hl opt">=</span> addUser <span class="hl opt">(</span>mkUser
 <span class="hl lin"> 5 </span>    <span class="hl kwd">then</span> a 
 <span class="hl lin"> 6 </span>    <span class="hl kwd">else</span> b</pre>
         </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
         <li>An updated handler that takes in a user db:
 <pre class="hl"><span class="hl lin"> 1 </span>handler <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> MyState Response
 <span class="hl lin"> 2 </span>handler udb <span class="hl opt">=</span> <span class="hl kwd">do</span>
@@ -590,18 +716,40 @@ userDB <span class="hl opt">=</span> addUser <span class="hl opt">(</span>mkUser
 <span class="hl lin"> 4 </span>  a <span class="hl opt">&lt;-</span> ifAuthorized <span class="hl opt">(</span>lMyRead <span class="hl str">&quot;a&quot;</span><span class="hl opt">) (</span>lMyRead <span class="hl str">&quot;b&quot;</span><span class="hl opt">)</span>
 <span class="hl lin"> 5 </span>  <span class="hl kwc">return</span> <span class="hl opt">(</span><span class="hl kwc">fmap</span> Value a<span class="hl opt">)</span></pre>
         </li>
-      </ul>
-    </li>
-
-    <li class="slide">
-      <h1>Ch-Ch-Ch-Changes</h1>
-      <ul class="incremental">
         <li>An updated browser simulation:<br/>
 <pre class="hl"><span class="hl lin"> 1 </span>browser <span class="hl opt">::</span> UserDB <span class="hl opt">-&gt;</span> Request <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span>
 <span class="hl lin"> 2 </span>browser udb r <span class="hl opt">=</span> <span class="hl kwd">case</span> <span class="hl opt">(</span>runReader <span class="hl opt">(</span>evalStateT <span class="hl opt">(</span>handler udb<span class="hl opt">)</span> newAppState<span class="hl opt">)</span>  r<span class="hl opt">)</span> <span class="hl kwd">of</span>
 <span class="hl lin"> 3 </span>                  Right <span class="hl opt">(</span>Value v<span class="hl opt">) -&gt;</span> <span class="hl str">&quot;Page rendered STRING: &quot;</span><span class="hl opt">++</span>v
 <span class="hl lin"> 4 </span>                  Right <span class="hl opt">(</span>Stream vs<span class="hl opt">) -&gt;</span> <span class="hl str">&quot;Page rendered STREAM: &quot;</span><span class="hl opt">++(</span><span class="hl kwc">show</span> vs<span class="hl opt">)</span>
 <span class="hl lin"> 5 </span>                  Left v <span class="hl opt">-&gt;</span> <span class="hl str">&quot;BZZT! Invalid request: &quot;</span><span class="hl opt">++</span>v</pre>
+        </li>
+      </ul>
+    </li>
+
+    <li class="slide">
+      <h1>Ch-Ch-Ch-Changes</h1>
+      <ul class="incremental">
+        <li>Helper functions:<br/>
+<pre class="hl"><span class="hl lin"> 1 </span>mkUser <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> User
+<span class="hl lin"> 2 </span>mkUser <span class="hl opt">=</span> User
+<span class="hl lin"> 3 </span>
+<span class="hl lin"> 4 </span>addUser <span class="hl opt">::</span> User <span class="hl opt">-&gt;</span> UserDB <span class="hl opt">-&gt;</span> UserDB
+<span class="hl lin"> 5 </span>addUser u udb <span class="hl opt">=</span> u<span class="hl opt">:</span>udb
+<span class="hl lin"> 6 </span>
+<span class="hl lin"> 7 </span>removeUser <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> UserDB <span class="hl opt">-&gt;</span> UserDB
+<span class="hl lin"> 8 </span>removeUser n udb <span class="hl opt">=</span> <span class="hl kwc">filter</span> <span class="hl opt">(\</span>x <span class="hl opt">-&gt;</span> n <span class="hl opt">/= (</span>username x<span class="hl opt">))</span> udb
+<span class="hl lin"> 9 </span>
+<span class="hl lin">10 </span>findUser <span class="hl opt">::</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> <span class="hl kwb">String</span> <span class="hl opt">-&gt;</span> UserDB <span class="hl opt">-&gt; (</span><span class="hl kwb">Maybe</span> User<span class="hl opt">)</span>
+<span class="hl lin">11 </span>findUser u p udb <span class="hl opt">=</span> <span class="hl kwc">find</span> <span class="hl opt">(\</span>x <span class="hl opt">-&gt; (</span>username x<span class="hl opt">) ==</span> u <span class="hl opt">&amp;&amp; (</span>password x<span class="hl opt">) ==</span> p<span class="hl opt">)</span> udb
+<span class="hl lin">12 </span>
+<span class="hl lin">13 </span>emptyUserDb <span class="hl opt">::</span> UserDB
+<span class="hl lin">14 </span>emptyUserDb <span class="hl opt">= []</span>
+<span class="hl lin">15 </span>
+<span class="hl lin">16 </span>newAppState <span class="hl opt">::</span> AppState
+<span class="hl lin">17 </span>newAppState <span class="hl opt">=</span> AppState <span class="hl opt">{</span> user <span class="hl opt">=</span> Nothing <span class="hl opt">}</span>
+<span class="hl lin">18 </span>
+<span class="hl lin">19 </span>updateUser <span class="hl opt">:: (</span><span class="hl kwb">Maybe</span> User<span class="hl opt">) -&gt;</span> AppState <span class="hl opt">-&gt;</span> AppState
+<span class="hl lin">20 </span>updateUser u <span class="hl kwd">as</span> <span class="hl opt">=</span> <span class="hl kwd">as</span> <span class="hl opt">{</span> user <span class="hl opt">=</span> u <span class="hl opt">}</span></pre>
         </li>
       </ul>
     </li>
